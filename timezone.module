@@ -25,7 +25,7 @@ function timezone_form_system_regional_settings_alter(&$form, &$form_sate, $form
         'input[name="timezone_restricted"]' => array('checked' => FALSE),
       ),
     ),
-    '#description' => t("Enter list of timezones to be shown to users. One in each line in the format\"&lt;timezone-name&gt;|&lt;prefix&gt;\"   "),
+    '#description' => t("Enter list of timezones to be shown to users. One in each line in the format\"&lt;timezone-name&gt;|&lt;label&gt;\"   "),
   );
   $form['#validate'][] = 'timezone_validate_system_regional_settings';
 }
@@ -88,10 +88,10 @@ function timezone_time_zones($blank = NULL) {
   $zonelist = timezone_get_configured_timezones();
 
   $zones = $blank ? array('' => t('- None selected -')) : array();
-  foreach ($zonelist as $zone => $prefix) {
+  foreach ($zonelist as $zone => $label) {
     $zones[$zone] = t('@prefix: @date', array(
       '@date' => format_date(REQUEST_TIME, 'custom', variable_get('date_format_long', 'l, F j, Y - H:i') . ' O', $zone),
-      '@prefix' => $prefix)
+      '@prefix' => $label)
     );
   }
 

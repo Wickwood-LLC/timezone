@@ -5,18 +5,18 @@
  */
 function timezone_rules_action_info() {
   return array(
-    'timezone_get_familiar_name' => array(
-      'base' => 'timezone_get_familiar_name',
-      'label' => t('Get timezone familiar name'),
+    'timezone_get_label' => array(
+      'base' => 'timezone_get_label',
+      'label' => t('Get timezone label'),
       'group' => t('Timezone'),
       'parameter' => array(
         'timezone' => array('type' => 'text', 'label' => t('Timezone name')),
       ),
       'access callback' => 'feeds_rules_access_callback',
       'provides' => array(
-        'timezone_familiar_name' => array(
+        'timezone_label' => array(
           'type' => 'text',
-          'label' => t('Timezone familiar name'),
+          'label' => t('Timezone label'),
         ),
       ),
     ),
@@ -24,10 +24,10 @@ function timezone_rules_action_info() {
 }
 
 /**
- * Rules action callback for timezone_get_familiar_name
+ * Rules action callback for timezone_get_label
  */
-function timezone_get_familiar_name($timezone) {
+function timezone_get_label($timezone) {
   $zonelist = timezone_get_configured_timezones();
-  $familiar_name = isset($zonelist[$timezone]) ? $zonelist[$timezone] : $timezone;
-  return array('timezone_familiar_name' => $familiar_name);
+  $label = isset($zonelist[$timezone]) ? $zonelist[$timezone] : $timezone;
+  return array('timezone_label' => $label);
 }
