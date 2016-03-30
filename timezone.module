@@ -64,6 +64,19 @@ function timezone_form_user_profile_form_alter(&$form, &$form_sate, $form_id) {
 }
 
 /**
+ * Return configured list of timezones.
+ */
+function timezone_get_configured_timezones() {
+  $restricted_zone_list = explode("\n", variable_get('timezone_restriction_list', ''));
+  $zonelist = array();
+  foreach ($restricted_zone_list as $timezone_setting) {
+    $timezone_setting_parts = explode('|', $timezone_setting);
+    $zonelist[$timezone_setting_parts[0]] = isset($timezone_setting_parts[1]) ? $timezone_setting_parts[1] : '';
+  }
+  return $zonelist;
+}
+
+/**
  * Modified copy of system_time_zones()
  *
  * @see system_time_zones()
@@ -72,16 +85,14 @@ function timezone_form_user_profile_form_alter(&$form, &$form_sate, $form_id) {
  *   If evaluates true, prepend an empty time zone option to the array.
  */
 function timezone_time_zones($blank = NULL) {
-  $restricted_zone_list = explode("\n", variable_get('timezone_restriction_list', ''));
-  $zonelist = array();
-  foreach ($restricted_zone_list as $timezone_setting) {
-    $timezone_setting_parts = explode('|', $timezone_setting);
-    $zonelist[$timezone_setting_parts[0]] = isset($timezone_setting_parts[1]) ? $timezone_setting_parts[1] : '';
-  }
+  $zonelist = timezone_get_configured_timezones();
 
   $zones = $blank ? array('' => t('- None selected -')) : array();
   foreach ($zonelist as $zone => $prefix) {
-    $zones[$zone] = t('@prefix @zone: @date', array('@zone' => t(str_replace('_', ' ', $zone)), '@date' => format_date(REQUEST_TIME, 'custom', variable_get('date_format_long', 'l, F j, Y - H:i') . ' O', $zone), '@prefix' => $prefix));
+    $zones[$zone] = t('@prefix: @date', array(
+      '@date' => format_date(REQUEST_TIME, 'custom', variable_get('date_format_long', 'l, F j, Y - H:i') . ' O', $zone),
+      '@prefix' => $prefix)
+    );
   }
 
   return $zones;
