@@ -27,7 +27,10 @@ function timezone_rules_action_info() {
  * Rules action callback for timezone_get_label
  */
 function timezone_get_label($timezone) {
-  $zonelist = timezone_get_configured_timezones();
-  $label = isset($zonelist[$timezone]) ? $zonelist[$timezone] : $timezone;
-  return array('timezone_label' => $label);
+  $zone_labels = &drupal_static(__FUNCTION__);
+  if (!isset($zone_labels[$timezone])) {
+    $zonelist = timezone_get_configured_timezones();
+    $zone_labels[$timezone] = isset($zonelist[$timezone]) ? $zonelist[$timezone] : $timezone;
+  }
+  return array('timezone_label' => $zone_labels[$timezone]);
 }
